@@ -25,7 +25,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/listViewSensorValues"
-        android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
         android:layout_toEndOf="@+id/textViewSensing" />
 </RelativeLayout>

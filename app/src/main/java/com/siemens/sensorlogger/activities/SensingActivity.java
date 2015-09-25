@@ -24,6 +24,7 @@ public class SensingActivity extends Activity implements SensorEventListener {
     private ArrayList<Sensor> sensors = new ArrayList<>();
     private SensorManager sensorManager;
     private ListView listViewSensorNames, listViewSensorValues;
+    private int stepsDetected = 0, initialStepsCounted = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,6 @@ public class SensingActivity extends Activity implements SensorEventListener {
 
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, nullEvents);
         listViewSensorValues.setAdapter(arrayAdapter);
-
     }
 
     @Override
@@ -92,10 +92,23 @@ public class SensingActivity extends Activity implements SensorEventListener {
         int index = sensors.indexOf(event.sensor);
         TextView displayText = (TextView) listViewSensorValues.getChildAt(index);
         String text = "";
-        for (float value : event.values){
-            text += value + ",";
+        if (event.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
+            stepsDetected += event.values[0];
+            text = "" + stepsDetected;
+        } else if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
+            if (initialStepsCounted == 0) {
+                initialStepsCounted = (int) event.values[0];
+            } else {
+                text = "" + (event.values[0] - initialStepsCounted);
+            }
+        } else {
+            for (float value : event.values) {
+                text += value + ",";
+            }
+
         }
-        displayText.setText(text);
+        if (displayText != null)
+            displayText.setText(text);
     }
 
     @Override
